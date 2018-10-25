@@ -1,1 +1,21 @@
+import time
 
+PERIOD = 1.0 #Number of seconds per cycle.
+TimeSinceMidnight = 10 #Measured in hours.
+
+next = time.time() + PERIOD
+
+while True:
+  print("{:.2f}".format(time.time()))
+  
+  a = (((round(time.time(), 0)) - (TimeSinceMidnight*3600)) / 86400)
+  print(a)
+  print(a.is_integer())
+  
+  delay = -1.0
+  
+  while delay < 0.0:
+    delay = next - time.time()
+    next += PERIOD
+  
+  time.sleep(delay)
