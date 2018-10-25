@@ -1,1 +1,35 @@
+import RPi.GPIO as GPIO
+import time
+import sys
 
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(26, GPIO.OUT)
+
+p = GPIO.PWM(26, 50)
+p.ChangeDutyCycle(0)
+p.start(5)
+
+def button_callback(channel):
+  p.ChangeDutyCycle(10)
+  time.sleep(1.5)
+  p.ChangeDutyCycle(5)
+  time.sleep(1.5)
+def button_callbackkill(channel):
+  p.stop()
+  GPIO.cleanup()
+  sys.exit()
+
+GPIO.add_event_detect(10, GPIO.RISING, callback=button_callback)
+GPIO.add_event_detect(22, GPIO.RISING, callback=button_callbackkill)
+
+try:
+  while True:
+    time.sleep(1)
+
+except KeyboardInterrupt:
+  p.stop()
+  GPIO.cleanup()
+  sys.exit()
