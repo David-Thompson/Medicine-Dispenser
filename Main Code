@@ -42,7 +42,7 @@ while True: #Main loop.
   a = round(a, 4)
   if (a.is_integer()):
     
-    x = time.time() - 1538000000 + 86400 #1540699300 is a Sunday at midnight.
+    x = time.time() - 1538000000 + 86400 #1540699000 is a Sunday at midnight.
     while x > 86400:
       if x > 86400:
         x -= 86400
