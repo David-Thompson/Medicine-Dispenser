@@ -1,0 +1,29 @@
+import RPi.GPIO as GPIO
+import time
+import sys
+
+#The large servo rotates 130 degrees.
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(10, GPIO.OUT)
+GPIO.setup(12, GPIO.OUT)
+GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(22, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(24, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(26, GPIO.OUT, initial=GPIO.LOW)
+
+pMain = GPIO.PWM(10, 50)
+pTrap = GPIO.PWM(12, 50)
+
+TimeSinceMidnight = 9 #Measured in hours.
+
+Day1 = 0
+Day2 = 0
+Day3 = 0
+Day4 = 0
+Day5 = 0
+Day6 = 0
+Day7 = 0
+
