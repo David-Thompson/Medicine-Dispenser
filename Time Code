@@ -1,7 +1,7 @@
 import time
 
 PERIOD = 1.0 #Number of seconds per cycle.
-TimeSinceMidnight = 10 #Measured in hours.
+TimeSinceMidnight = 9 #Measured in hours.
 
 next = time.time() + PERIOD
 
