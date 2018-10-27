@@ -139,7 +139,7 @@ while True: #Main loop.
     pTrap.ChangeDutyCycle(11)
     time.sleep(0.5)
     
-    time.sleep(7) #Used to ensure the device sttempts to dispense only once per day.
+    time.sleep(7) #Used to ensure the device attempts to dispense only once per day.
     
     
     #Sync internal clock here.
