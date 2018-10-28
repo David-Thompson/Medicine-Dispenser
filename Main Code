@@ -17,7 +17,9 @@ GPIO.setup(26, GPIO.OUT, initial=GPIO.LOW)
 pMain = GPIO.PWM(10, 50)
 pTrap = GPIO.PWM(12, 50)
 
-TimeSinceMidnight = 9 #Measured in hours.
+DaysPerDispense = 1
+DaysPerDispense2 = 1
+z = 1
 
 Day1 = 0
 Day2 = 0
@@ -31,115 +33,156 @@ pMain.start(3)
 pMain.ChangeDutyCycle(0)
 pMain.ChangeDutyCycle(3)
 pTrap.start(11)
-pTrap.ChangeDutyCycle(0)
 pTrap.ChangeDutyCycle(11)
 time.sleep(0.5)
 
-#Sync internal clock here, determine hourly dispense time, enter email address.
+#Sync internal clock here, enter email address.
+
+TimeSinceMidnight = 1.5 #This number needs a non-zero decimal.
+while True:
+  c = 1
+  try:
+    TimeSinceMidnight = float(input("Enter the dispense time (24h time): "))
+  except ValueError:
+    print("")
+    print("That's not an integer, please try again.")
+    c = 0
+  if (TimeSinceMidnight/1.0).is_integer():
+    break
+  if c:
+    print("")
+    print("That's not an integer, please try again.")
+
+DaysPerDispense2 = 1.5 #This number needs a non-zero decimal.
+while True:
+  c = 1
+  try:
+    DaysPerDispense2 = float(input("Enter the number of days between dispenses: "))
+  except ValueError:
+    print("")
+    print("That's not an integer, please try again.")
+    c = 0
+  if (DaysPerDispense2/1.0).is_integer():
+    break
+  if c:
+    print("")
+    print("That's not an integer, please try again.")
 
 while True: #Main loop.
   a = (((round(time.time(), 0)) - (TimeSinceMidnight*3600)) / 86400)
   a = round(a, 4)
   if (a.is_integer()):
-    
-    x = time.time() - 1538000000 + 86400 #1540699000 is a Sunday at midnight.
-    while x > 86400:
-      if x > 86400:
-        x -= 86400
-        Day1 += 1
-      else:
-        break
-      if x > 86400:
-        x -= 86400
-        Day2 += 1
-      else:
-        break
-      if x > 86400:
-        x -= 86400
-        Day3 += 1
-      else:
-        break
-      if x > 86400:
-        x -= 86400
-        Day4 += 1
-      else:
-        break
-      if x > 86400:
-        x -= 86400
-        Day5 += 1
-      else:
-        break
-      if x > 86400:
-        x -= 86400
-        Day6 += 1
-      else:
-        break
-      if x > 86400:
-        x -= 86400
-        Day7 += 1
-      else:
-        break
-      
-    if (Day1 > Day2):
-      pMain.ChangeDutyCycle(4)
-    elif (Day2 > Day3):
-      pMain.ChangeDutyCycle(5)
-    elif (Day3 > Day4):
-      pMain.ChangeDutyCycle(6)
-    elif (Day4 > Day5):
-      pMain.ChangeDutyCycle(7)
-    elif (Day5 > Day6):
-      pMain.ChangeDutyCycle(8)
-    elif (Day6 > Day7):
-      pMain.ChangeDutyCycle(9)
+    if ((DaysPerDispense > 1) and (z > 1)):
+      z -= 1
+      time.sleep(10)
     else:
-      pMain.ChangeDutyCycle(10)
-    time.sleep(1)
+      x = 86400 + ((time.time() - 1538000000) / DaysPerDispense) #1540699000 is a Sunday at midnight.
+      while x > 86400:
+        if x > 86400:
+          x -= 86400
+          Day1 = 1
+          Day7 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Day2 = 1
+          Day1 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Day3 = 1
+          Day2 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Day4 = 1
+          Day3 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Day5 = 1
+          Day4 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Day6 = 1
+          Day5 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Day7 = 1
+          Day6 = 0
+        else:
+          break
+      
+      if (Day1):
+        pMain.ChangeDutyCycle(4)
+      elif (Day2):
+        pMain.ChangeDutyCycle(5)
+      elif (Day3):
+        pMain.ChangeDutyCycle(6)
+      elif (Day4):
+        pMain.ChangeDutyCycle(7)
+      elif (Day5):
+        pMain.ChangeDutyCycle(8)
+      elif (Day6):
+        pMain.ChangeDutyCycle(9)
+      else:
+        pMain.ChangeDutyCycle(10)
+      time.sleep(1)
     
-    Day1 = 0
-    Day2 = 0
-    Day3 = 0
-    Day4 = 0
-    Day5 = 0
-    Day6 = 0
-    Day7 = 0
+      Day1 = 0
+      Day2 = 0
+      Day3 = 0
+      Day4 = 0
+      Day5 = 0
+      Day6 = 0
+      Day7 = 0
     
-    print("")
-    print(time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime(time.time())))
-    print("It's time to take your medicine.")
+      print("")
+      print(time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime(time.time())))
+      print("It's time to take your medicine.")
     
-    #Email user that it's time to take the medicine here.
+      #Email user that it's time to take the medicine here.
     
-    while True:
-      GPIO.output(22, GPIO.HIGH)
-      button_state = GPIO.input(16)
-      if button_state:
-        break
-      time.sleep(0.1)
+      while True:
+        GPIO.output(22, GPIO.HIGH)
+        button_state = GPIO.input(16)
+        if button_state:
+          break
+        time.sleep(0.1)
+        GPIO.output(22, GPIO.LOW)
+        GPIO.output(24, GPIO.HIGH)
+        button_state = GPIO.input(16)
+        if button_state:
+          break
+        time.sleep(0.1)
+        GPIO.output(24, GPIO.LOW)
+        GPIO.output(26, GPIO.HIGH)
+        button_state = GPIO.input(16)
+        if button_state:
+          break
+        time.sleep(0.1)
+        GPIO.output(26, GPIO.LOW)
+    
       GPIO.output(22, GPIO.LOW)
-      GPIO.output(24, GPIO.HIGH)
-      button_state = GPIO.input(16)
-      if button_state:
-        break
-      time.sleep(0.1)
       GPIO.output(24, GPIO.LOW)
-      GPIO.output(26, GPIO.HIGH)
-      button_state = GPIO.input(16)
-      if button_state:
-        break
-      time.sleep(0.1)
       GPIO.output(26, GPIO.LOW)
     
-    GPIO.output(22, GPIO.LOW)
-    GPIO.output(24, GPIO.LOW)
-    GPIO.output(26, GPIO.LOW)
+      pTrap.ChangeDutyCycle(7)
+      time.sleep(2)
+      pTrap.ChangeDutyCycle(11)
+      time.sleep(0.5)
     
-    pTrap.ChangeDutyCycle(7)
-    time.sleep(2)
-    pTrap.ChangeDutyCycle(11)
-    time.sleep(0.5)
-    
-    time.sleep(7) #Used to ensure the device attempts to dispense only once per day.
+      time.sleep(7) #Used to ensure the device attempts to dispense only once per day.
+      DaysPerDispense = DaysPerDispense2
+      z = DaysPerDispense
     
     
     #Sync internal clock here.
@@ -166,4 +209,3 @@ while True: #Main loop.
     if button_state2:
       pMain.ChangeDutyCycle(10)
     time.sleep(0.2) #End of main loop.
-    
