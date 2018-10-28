@@ -63,9 +63,12 @@ while True:
     print("")
     print("That's not an integer, please try again.")
     c = 0
-  if (DaysPerDispense2/1.0).is_integer():
+  if ((DaysPerDispense2/1.0).is_integer() and (DaysPerDispense2 > 0)):
     break
-  if c:
+  elif (DaysPerDispense2 <= 0.0):
+    print("")
+    print("Choose a number greater than zero.")
+  elif c:
     print("")
     print("That's not an integer, please try again.")
 print("")
