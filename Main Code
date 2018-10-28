@@ -71,6 +71,7 @@ while True:
 print("")
 
 while True: #Main loop.
+  time.sleep(1)
   a = (((round(time.time(), 0)) - (TimeSinceMidnight*3600)) / 86400)
   a = round(a, 4)
   if (a.is_integer()):
