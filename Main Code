@@ -52,6 +52,7 @@ while True:
   if c:
     print("")
     print("That's not an integer, please try again.")
+print("")
 
 DaysPerDispense2 = 1.5 #This number needs a non-zero decimal.
 while True:
@@ -67,6 +68,7 @@ while True:
   if c:
     print("")
     print("That's not an integer, please try again.")
+print("")
 
 while True: #Main loop.
   a = (((round(time.time(), 0)) - (TimeSinceMidnight*3600)) / 86400)
