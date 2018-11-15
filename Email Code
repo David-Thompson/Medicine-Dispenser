@@ -1,1 +1,80 @@
+import smtplib
+import re
+import random
 
+regexAt = re.compile('@')
+regexPeriod = re.compile('.')
+
+while True:
+  code = 0
+  number = 0
+  
+  print("")
+  EnteredGmailAddress = input("Enter your Gmail account: ")
+  
+  if (regexAt.search(EnteredGmailAddress) == None):
+    print("")
+    print("That is not a valid email address, please try again.")
+  else:
+    if (regexPeriod.search(EnteredGmailAddress) == None):
+      print("")
+      print("That is not a valid email address, please try again.")
+    else:
+      EnteredGmailPassword = input("Enter your Gmail password: ")
+      EnteredGmailPassword2 = input("Confirm your Gmail password: ")
+      
+      if (EnteredGmailPassword2 == EnteredGmailPassword):
+        for d in range(5):
+          if d == 0:
+            number = random.randint(1,10)
+            code = code + number
+          elif d == 1:
+            number = (random.randint(1,10) * 10)
+            code = code + number
+          elif d == 2:
+            number = (random.randint(1,10) * 100)
+            code = code + number
+          elif d == 3:
+            number = (random.randint(1,10) * 1000)
+            code = code + number
+          else:
+            number = (random.randint(1,10) * 10000)
+            code = code + number
+        
+        to = EnteredGmailAddress
+        gmail_user = EnteredGmailAddress
+        gmail_password = EnteredGmailPassword
+        
+        msgGmail = "\r\n".join([
+          "From Your Smart Medicine Dispenser",
+          "To: You",
+          "Subject: Authorisation Code",
+          "",
+          code
+          ])
+          
+        smtpserver = smtplib.SMTP("smtp.gmail.com", 587)
+        smtpserver.ehlo()
+        smtpserver.starttls()
+        smtpserver.ehlo
+        smtpserver.login(gmail_user, gmail_password)
+        smtpserver.sendmail(gmail_user, to, msgGmail)
+        smtpserver.quit()
+        
+        print("")
+        print("A code has been sent to the specified Gmail account.")
+        EnteredCode = input("Please enter the code here: ")
+        print("")
+        
+        if (EnteredCode == code):
+          print("Gmail reminders successfully setup.")
+          break
+        else:
+          print("That code was incorrect.")
+          print("You'll be taken back to the beginning to try again.")
+          
+      else:
+        print("")
+        print("Those passwords don't match.")
+        print("You'll be taken back to the beginning to try again.")
+print("")
