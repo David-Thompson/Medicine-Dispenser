@@ -1,0 +1,297 @@
+import RPi.GPIO as GPIO
+import time
+import sys
+import smtplib
+import re
+import random
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(10, GPIO.OUT)
+GPIO.setup(12, GPIO.OUT)
+GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(22, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(24, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(26, GPIO.OUT, initial=GPIO.LOW)
+
+pMain = GPIO.PWM(10, 50)
+pTrap = GPIO.PWM(12, 50)
+
+DaysPerDispense = 1
+DaysPerDispense2 = 1
+z = 1
+
+Slot1 = 0
+Slot2 = 0
+Slot3 = 0
+Slot4 = 0
+Slot5 = 0
+Slot6 = 0
+Slot7 = 0
+
+pMain.start(3)
+pMain.ChangeDutyCycle(0)
+pMain.ChangeDutyCycle(3)
+pTrap.start(11)
+pTrap.ChangeDutyCycle(11)
+time.sleep(0.5)
+
+msg = "\r\n".join([
+  "From: Your Smart Medicine Dispenser",
+  "To: You",
+  "Subject: Reminder",
+  "",
+  "It's time to take your medicine."
+  ])
+
+TimeSinceMidnight = 1.5 #This number needs a non-zero decimal.
+while True:
+  c = 1
+  try:
+    TimeSinceMidnight = float(input("Enter the dispense time (24h time): "))
+  except ValueError:
+    print("")
+    print("That's not an integer, please try again.")
+    c = 0
+  if (TimeSinceMidnight/1.0).is_integer():
+    c = 0
+    if (TimeSinceMidnight < 0):
+      print("")
+      print("Enter a time greater than zero.")
+    elif (TimeSinceMidnight > 23):
+      print("")
+      print("Enter a time equal to or less than 23.")
+    else:
+      break
+  if c:
+    print("")
+    print("That's not an integer, please try again.")
+print("")
+
+DaysPerDispense2 = 1.5 #This number needs a non-zero decimal.
+while True:
+  c = 1
+  try:
+    DaysPerDispense2 = float(input("Enter the number of days between dispenses: "))
+  except ValueError:
+    print("")
+    print("That's not an integer, please try again.")
+    c = 0
+  if ((DaysPerDispense2/1.0).is_integer() and (DaysPerDispense2 > 0)):
+    break
+  elif (DaysPerDispense2 <= 0.0):
+    print("")
+    print("Choose a number greater than zero.")
+  elif c:
+    print("")
+    print("That's not an integer, please try again.")
+print("")
+
+regexAt = re.compile('@')
+regexPeriod = re.compile('.')
+while True:
+  code = 0
+  
+  print("")
+  EnteredGmailAddress = input("Enter your Gmail account: ")
+  
+  if (regexAt.search(EnteredGmailAddress) == None):
+    print("")
+    print("That is not a valid Gmail address, please try again.")
+  else:
+    if (regexPeriod.search(EnteredGmailAddress) == None):
+      print("")
+      print("That is not a valid Gmail address, please try again.")
+    else:
+      EnteredGmailPassword = input("Enter your Gmail password: ")
+      EnteredGmailPassword2 = input("Confirm your Gmail password: ")
+      
+      if (EnteredGmailPassword2 == EnteredGmailPassword):
+        for d in range (5):
+          code += ((10 ** d) * random.randint(0,10))
+        
+        code = str(code)
+        to = EnteredGmailAddress
+        gmail_user = EnteredGmailAddress
+        gmail_password = EnteredGmailPassword
+        
+        msgGmail = "\r\n".join([
+          "From: Your Smart Medicine Dispenser",
+          "To: You",
+          "Subject: Authorisation Code",
+          "",
+          code
+          ])
+        
+        smtpserver = smtplib.SMTP("smtp.gmail.com:587")
+        smtpserver.ehlo()
+        smtpserver.starttls()
+        smtpserver.ehlo
+        smtpserver.login(gmail_user, gmail_password)
+        smtpserver.sendmail(gmail_user, to, msgGmail)
+        smtpserver.quit()
+        
+        print("")
+        print("A code has been sent to the specified Gmail account.")
+        EnteredCode = input("Please enter the code here: ")
+        print("")
+        
+        if (EnteredCode == code):
+          print("Gmail reminders successfully setup.")
+          break
+        else:
+          print("That code was incorrect.")
+          print("You'll be taken back to the beginning to try again.")
+        
+      else:
+        print("")
+        print("Those passwords don't match.")
+        print("You'll be taken back to the beginning to try again.")
+print("")
+
+MidnightDayOf = round((time.time() / 86400), 0)
+MidnightDayOf = (MidnightDayOf * 86400)
+while True: #Main loop.
+  a = (((round(time.time(), 0)) - (TimeSinceMidnight*3600)) / 86400)
+  a = round(a, 4)
+  if (a.is_integer()):
+    if ((DaysPerDispense > 1) and (z > 1)):
+      z -= 1
+      time.sleep(10)
+    else:
+      x = 86400 + ((time.time() - MidnightDayOf) / DaysPerDispense)
+      while x > 86400:
+        if x > 86400:
+          x -= 86400
+          Slot1 = 1
+          Slot7 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Slot2 = 1
+          Slot1 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Slot3 = 1
+          Slot2 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Slot4 = 1
+          Slot3 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Slot5 = 1
+          Slot4 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Slot6 = 1
+          Slot5 = 0
+        else:
+          break
+        if x > 86400:
+          x -= 86400
+          Slot7 = 1
+          Slot6 = 0
+        else:
+          break
+      
+      if (Slot1):
+        pMain.ChangeDutyCycle(4)
+      elif (Slot2):
+        pMain.ChangeDutyCycle(5)
+      elif (Slot3):
+        pMain.ChangeDutyCycle(6)
+      elif (Slot4):
+        pMain.ChangeDutyCycle(7)
+      elif (Slot5):
+        pMain.ChangeDutyCycle(8)
+      elif (Slot6):
+        pMain.ChangeDutyCycle(9)
+      else:
+        pMain.ChangeDutyCycle(10)
+      time.sleep(1)
+    
+      Slot1 = 0
+      Slot2 = 0
+      Slot3 = 0
+      Slot4 = 0
+      Slot5 = 0
+      Slot6 = 0
+      Slot7 = 0
+    
+      print("")
+      print(time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime(time.time())))
+      print("It's time to take your medicine.")
+        
+      smtpserver = smtplib.SMTP("smtp.gmail.com", 587)
+      smtpserver.ehlo()
+      smtpserver.starttls()
+      smtpserver.ehlo
+      smtpserver.login(gmail_user, gmail_password)
+      smtpserver.sendmail(gmail_user, to, msg)
+      smtpserver.quit()
+    
+      while True:
+        GPIO.output(22, GPIO.HIGH)
+        button_state = GPIO.input(16)
+        if button_state:
+          break
+        time.sleep(0.1)
+        GPIO.output(22, GPIO.LOW)
+        GPIO.output(24, GPIO.HIGH)
+        button_state = GPIO.input(16)
+        if button_state:
+          break
+        time.sleep(0.1)
+        GPIO.output(24, GPIO.LOW)
+        GPIO.output(26, GPIO.HIGH)
+        button_state = GPIO.input(16)
+        if button_state:
+          break
+        time.sleep(0.1)
+        GPIO.output(26, GPIO.LOW)
+    
+      GPIO.output(22, GPIO.LOW)
+      GPIO.output(24, GPIO.LOW)
+      GPIO.output(26, GPIO.LOW)
+    
+      pTrap.ChangeDutyCycle(7)
+      time.sleep(2)
+      pTrap.ChangeDutyCycle(11)
+      time.sleep(0.5)
+    
+      time.sleep(7) #Used to ensure the device attempts to dispense only once per day.
+      DaysPerDispense = DaysPerDispense2
+      z = DaysPerDispense
+       
+  else:
+    button_state2 = GPIO.input(18)
+    if button_state2:
+      pMain.ChangeDutyCycle(3)
+    time.sleep(0.2)
+    button_state2 = GPIO.input(18)
+    if button_state2:
+      pMain.ChangeDutyCycle(3)
+    time.sleep(0.2)
+    button_state2 = GPIO.input(18)
+    if button_state2:
+      pMain.ChangeDutyCycle(3)
+    time.sleep(0.2)
+    button_state2 = GPIO.input(18)
+    if button_state2:
+      pMain.ChangeDutyCycle(3)
+    time.sleep(0.2)
+    button_state2 = GPIO.input(18)
+    if button_state2:
+      pMain.ChangeDutyCycle(3)
+    time.sleep(0.2) #End of main loop.
