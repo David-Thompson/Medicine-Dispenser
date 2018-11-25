@@ -45,29 +45,29 @@ msg = "\r\n".join([
   "It's time to take your medicine."
   ])
 
-TimeSinceMidnight = 1.5 #This number needs a non-zero decimal.
-while True:
-  c = 1
-  try:
-    TimeSinceMidnight = float(input("Enter the dispense time (24h time): "))
-  except ValueError:
-    print("")
-    print("That's not an integer, please try again.")
-    c = 0
-  if (TimeSinceMidnight/1.0).is_integer():
-    c = 0
-    if (TimeSinceMidnight < 0):
-      print("")
-      print("Enter a time greater than zero.")
-    elif (TimeSinceMidnight > 23):
-      print("")
-      print("Enter a time equal to or less than 23.")
-    else:
-      break
-  if c:
-    print("")
-    print("That's not an integer, please try again.")
-print("")
+TimeSinceMidnight = 1.0
+#while True:
+#  c = 1
+#  try:
+#    TimeSinceMidnight = float(input("Enter the dispense time (24h time): "))
+#  except ValueError:
+#    print("")
+#    print("That's not an integer, please try again.")
+#    c = 0
+#  if (TimeSinceMidnight/1.0).is_integer():
+#    c = 0
+#    if (TimeSinceMidnight < 0):
+#      print("")
+#      print("Enter a time greater than zero.")
+#    elif (TimeSinceMidnight > 23):
+#      print("")
+#      print("Enter a time equal to or less than 23.")
+#    else:
+#      break
+#  if c:
+#    print("")
+#    print("That's not an integer, please try again.")
+#print("")
 
 DaysPerDispense2 = 1.5 #This number needs a non-zero decimal.
 while True:
@@ -150,60 +150,84 @@ while True:
         print("You'll be taken back to the beginning to try again.")
 print("")
 
-MidnightDayOf = round((time.time() / 86400), 0)
-MidnightDayOf = (MidnightDayOf * 86400)
+#MidnightDayOf = round((time.time() / 86400), 0)
+#MidnightDayOf = (MidnightDayOf * 86400)
+
+number = 30
+number2 = 0
+
 while True: #Main loop.
-  a = (((round(time.time(), 0)) - (TimeSinceMidnight*3600)) / 86400)
-  a = round(a, 4)
-  if (a.is_integer()):
+  number += 1
+#  a = (((round(time.time(), 0)) - (TimeSinceMidnight*3600)) / 86400)
+#  a = round(a, 4)
+#  if (a.is_integer()):
+  if ((number / DaysPerDispense) > 29):
     if ((DaysPerDispense > 1) and (z > 1)):
       z -= 1
+      number = 10
       time.sleep(10)
     else:
-      x = 86400 + ((time.time() - MidnightDayOf) / DaysPerDispense)
-      while x > 86400:
-        if x > 86400:
-          x -= 86400
-          Slot1 = 1
-          Slot7 = 0
-        else:
-          break
-        if x > 86400:
-          x -= 86400
-          Slot2 = 1
-          Slot1 = 0
-        else:
-          break
-        if x > 86400:
-          x -= 86400
-          Slot3 = 1
-          Slot2 = 0
-        else:
-          break
-        if x > 86400:
-          x -= 86400
-          Slot4 = 1
-          Slot3 = 0
-        else:
-          break
-        if x > 86400:
-          x -= 86400
-          Slot5 = 1
-          Slot4 = 0
-        else:
-          break
-        if x > 86400:
-          x -= 86400
-          Slot6 = 1
-          Slot5 = 0
-        else:
-          break
-        if x > 86400:
-          x -= 86400
-          Slot7 = 1
-          Slot6 = 0
-        else:
-          break
+      number2 += 1
+      if (number2 == 1):
+        Slot1 = 1
+      elif (number2 == 2):
+        Slot2 = 1
+      elif (number2 == 3):
+        Slot3 = 1
+      elif (number2 == 4):
+        Slot4 = 1
+      elif (number2 == 5):
+        Slot5 = 1
+      elif (number2 == 6):
+        Slot6 = 1
+      else:
+        Slot7 = 1
+        number2 = 0
+
+#      x = 86400 + ((time.time() - MidnightDayOf) / DaysPerDispense)
+#      while x > 86400:
+#        if x > 86400:
+#          x -= 86400
+#          Slot1 = 1
+#          Slot7 = 0
+#        else:
+#          break
+#        if x > 86400:
+#          x -= 86400
+#          Slot2 = 1
+#          Slot1 = 0
+#        else:
+#          break
+#        if x > 86400:
+#          x -= 86400
+#          Slot3 = 1
+#          Slot2 = 0
+#        else:
+#          break
+#        if x > 86400:
+#          x -= 86400
+#          Slot4 = 1
+#          Slot3 = 0
+#        else:
+#          break
+#        if x > 86400:
+#          x -= 86400
+#          Slot5 = 1
+#          Slot4 = 0
+#        else:
+#          break
+#        if x > 86400:
+#          x -= 86400
+#          Slot6 = 1
+#          Slot5 = 0
+#        else:
+#          break
+#        if x > 86400:
+#          x -= 86400
+#          Slot7 = 1
+#          Slot6 = 0
+#        else:
+#          break
       
       if (Slot1):
         pMain.ChangeDutyCycle(4)
