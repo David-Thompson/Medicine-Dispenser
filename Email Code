@@ -41,6 +41,7 @@ while True:
             number = (random.randint(1,10) * 10000)
             code = code + number
         
+        code = str(code)
         to = EnteredGmailAddress
         gmail_user = EnteredGmailAddress
         gmail_password = EnteredGmailPassword
